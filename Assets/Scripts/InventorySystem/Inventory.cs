@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace InventorySystem
 {
     public class Inventory : MonoBehaviour
     {
-        [SerializeField] private Dictionary<ItemType, int> _items; 
+        public event Action<Dictionary<ItemType, int>> OnInventoryUpdate;
 
+        [SerializeField] private Dictionary<ItemType, int> _items; 
 
         private void Start()
         {
@@ -24,6 +26,8 @@ namespace InventorySystem
             {
                 _items.Add(type, amount);
             }
+            
+            OnInventoryUpdate?.Invoke(_items);
         }
         
         public int GetItemAmount(ItemType type)

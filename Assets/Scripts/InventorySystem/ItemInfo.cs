@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace InventorySystem
 {
     [System.Serializable]
@@ -5,5 +7,6 @@ namespace InventorySystem
     {
         public string itemName;
         public ItemType itemType;
+        public Sprite sprite;
     }
 }
