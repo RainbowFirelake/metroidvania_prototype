@@ -21,9 +21,13 @@ public class PlayerInput : MonoBehaviour
         float directionY = Input.GetAxisRaw("Vertical");
         _controllable.MoveControllable(directionX, directionY);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space))
         {
-            _controllable.Jump();
+            _controllable.Jump(KeyState.KeyDown);
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _controllable.Jump(KeyState.KeyUp);
         }
 
         if (Input.GetMouseButtonDown(0))

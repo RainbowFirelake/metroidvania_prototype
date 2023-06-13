@@ -33,23 +33,23 @@ public abstract class BasicMovement : MonoBehaviour
         OnMove?.Invoke(moveSpeedX, moveSpeedY);
     }
 
-    public virtual void Jump()
+    public void Jump(KeyState state = KeyState.Default)
     {
+        JumpBehaviour(state);
         OnJump?.Invoke();
     }
 
-    public virtual void Dash()
+    protected abstract void JumpBehaviour(KeyState state = KeyState.Default);
+
+    public void Dash()
     {
+        DashBehaviour();
         OnDash?.Invoke();
     }
+
+    protected abstract void DashBehaviour();
     
-    public virtual void DisableMove()
-    {
-        
-    }
+    public abstract void DisableMove();
     
-    public virtual void EnableMove()
-    {
-        
-    }
+    public abstract void EnableMove();
 }

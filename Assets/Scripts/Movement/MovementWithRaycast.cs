@@ -150,7 +150,7 @@ public class MovementWithRaycast : BasicMovement
         _isGrounded = false;
     }
 
-    public override void Jump()
+    protected override void JumpBehaviour(KeyState state = KeyState.Default)
     {
         if (!_isGrounded && _timeAfterExitingGround > _moveParams.CoyoteTime) return;
 
@@ -161,12 +161,23 @@ public class MovementWithRaycast : BasicMovement
         _rigidbody2D.AddForce(jumpDirection, ForceMode2D.Impulse);
     }
 
-    public override void Dash()
+    protected override void DashBehaviour()
     {
         if (_isGrounded)
         {
             Vector2 dashDirection = new Vector2(_moveParams.DashStrength * _lastMoveDirection, 0);
             _rigidbody2D.AddForce(dashDirection, ForceMode2D.Impulse);
         }
+    }
+
+    public override void DisableMove()
+    {
+        moveDirectionX = 0;
+        moveDirectionY = 0;
+    }
+
+    public override void EnableMove()
+    {
+        
     }
 }

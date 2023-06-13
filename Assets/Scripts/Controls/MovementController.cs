@@ -43,9 +43,9 @@ public class MovementController : MonoBehaviour, IControllable
         _movement.Dash();
     }
 
-    public void Jump()
+    public void Jump(KeyState state = KeyState.Default)
     {
-        _movement.Jump();
+        _movement.Jump(state);
     }
 
     private void StopMove()

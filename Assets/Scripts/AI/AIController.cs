@@ -64,7 +64,6 @@ public class AIController : MonoBehaviour
 
     private bool ChaseBehaviour()
     {
-        Debug.Log("ChaseBehaviour");
         var distance = Vector2.Distance(_transform.position,
             _nearestEnemy.transform.position);
 
@@ -88,7 +87,6 @@ public class AIController : MonoBehaviour
 
     private bool IdleBehaviour()
     {
-        Debug.Log("IdleBehaviour");
         if (!_nearestEnemy) 
         {
             _controllable.MoveControllable(0f, 0f); 
@@ -100,7 +98,6 @@ public class AIController : MonoBehaviour
 
     private bool AttackBehaviour()
     {
-        Debug.Log("AttackBehaviour");
         var distance = Vector2.Distance(_transform.position,
             _nearestEnemy.transform.position);
 
