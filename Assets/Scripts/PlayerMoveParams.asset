@@ -16,7 +16,8 @@ MonoBehaviour:
   _moveSpeedInAir: 3
   _jumpStrength: 5
   _isMovementActiveWhenInAir: 1
-  _jumpAfterExitGround: 0.2
+  _coyoteTime: 0.2
+  _jumpBufferingTime: 0.5
   _dashStrength: 7
   _dashTime: 0.7
   _dashCooldown: 0.3
