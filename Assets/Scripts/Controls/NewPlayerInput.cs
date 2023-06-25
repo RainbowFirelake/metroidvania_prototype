@@ -22,11 +22,10 @@ public class NewPlayerInput : MonoBehaviour
         _inputSystem.Player.Attack.performed += context => _controllable.Attack();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void Initialize()
     {
         _controllable = GetComponent<IControllable>();
-         }
+    }
 
     /// <summary>
     /// This function is called when the object becomes enabled and active.

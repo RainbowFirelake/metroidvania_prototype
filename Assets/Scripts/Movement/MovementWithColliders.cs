@@ -7,7 +7,9 @@ public class MovementWithColliders : BasicMovement
     [SerializeField] private MoveParams _moveParams;
     [SerializeField] private GroundDetector _groundDetector;
     [SerializeField] private Rigidbody2D _rigidbody2D;
-    [SerializeField] private Climber _climber;
+
+    [SerializeField] private WallDetector _leftDetector;
+    [SerializeField] private WallDetector _rightDetector;
 
     private float _coyoteTimeCounter = Mathf.Infinity;
     private float _jumpBufferCounter;
@@ -66,7 +68,9 @@ public class MovementWithColliders : BasicMovement
         {
             vector = _rigidbody2D.velocity;
         }
+
         _rigidbody2D.velocity = vector;
+
 
         base.Move(moveDirectionX, _rigidbody2D.velocity.y);
     }
