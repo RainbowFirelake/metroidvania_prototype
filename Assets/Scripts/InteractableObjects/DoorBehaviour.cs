@@ -24,7 +24,7 @@ namespace InteractableObjects.Doors
 
         private void OnEnable()
         {
-            _doorTrigger.OnDoorActivatorEnter += ActivateDoor;
+            
         }
 
         private void Update()

@@ -5,7 +5,8 @@ using System;
 
 public class Interactor : MonoBehaviour
 {
-    public event Action<IWorldInteractable> OnInteractablePositionDetected;
+    public event Action<Transform, string> OnInteractablePositionDetected;
+    public event Action OnInteractableMissing;
 
     [SerializeField] private float _updateInteractablesAround = 0.3f;
     [SerializeField] private float _interactRadius = 2f;
@@ -24,6 +25,11 @@ public class Interactor : MonoBehaviour
 
     private void Interaction()
     {
+        if (nearestInteractable != null)
+            OnInteractablePositionDetected?.Invoke(
+                nearestInteractable.t, nearestInteractable.InteractionName);
+        else OnInteractableMissing?.Invoke();
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             Debug.Log("Interaction");
@@ -44,6 +50,7 @@ public class Interactor : MonoBehaviour
             );
             if (interactables.Length == 0)
             {
+                nearestInteractable = null;
                 _timeAfterLastCheckAround = 0;
                 return;
             }
@@ -51,7 +58,6 @@ public class Interactor : MonoBehaviour
             {
                 _timeAfterLastCheckAround = 0;
                 nearestInteractable = interactables[0].GetComponent<IWorldInteractable>();
-                OnInteractablePositionDetected?.Invoke(nearestInteractable);
                 return;
             }
 
@@ -69,7 +75,6 @@ public class Interactor : MonoBehaviour
                 }
             }
             nearestInteractable = nearest.GetComponent<IWorldInteractable>();
-            OnInteractablePositionDetected?.Invoke(nearestInteractable);
             _timeAfterLastCheckAround = 0;
         }
     }

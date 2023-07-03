@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 5
   _moveSpeedInAir: 4
-  _jumpStrength: 6.5
+  _jumpStrength: 8
   _isMovementActiveWhenInAir: 1
   _coyoteTime: 0.2
   _jumpBufferingTime: 0.5
-  _dashStrength: 7
-  _dashTime: 0.7
-  _dashCooldown: 0.3
-  _canClimbOnWalls: 1
+  _dashStrength: 8
+  _dashTime: 0.3
+  _dashCooldown: 0.5
+  _canClimbOnWalls: 0
   _climbSpeed: 4

@@ -11,32 +11,36 @@ public class InteractableHintDisplayer : MonoBehaviour
     [SerializeField]
     private RectTransform _interactableHintPanel;
     [SerializeField]
-    private Camera _mainCamera;
-    [SerializeField]
     private Interactor _interactor;
 
-    private IWorldInteractable _interactableInfo;
+    private Transform _transform;
+
+    void Start()
+    {
+        _transform = GetComponent<Transform>();        
+    }
 
     void OnEnable()
     {
         _interactor.OnInteractablePositionDetected += UpdateInteractablePanel;
+        _interactor.OnInteractableMissing += Disable;
     }
 
-    void Update()
+    private void UpdateInteractablePanel(Transform t, string actionName)
     {
-        if (_interactableInfo != null)
-        {
-            text.text = _interactableInfo.InteractionName;
-            var ydelta = _interactableInfo.t.localScale.y;
-            Vector3 v = new Vector3(_interactableInfo.t.position.x, 
-                _interactableInfo.t.position.y + ydelta);
-            Vector3 screenPos = _mainCamera.WorldToScreenPoint(v);
-            _interactableHintPanel.position = screenPos;
-        }
+        Enable();
+        var vector = new Vector3(t.position.x, t.position.y + t.localScale.y);
+        _transform.position = vector;
+        text.text = actionName;
     }
 
-    private void UpdateInteractablePanel(IWorldInteractable interactable)
+    private void Enable()
     {
-        _interactableInfo = interactable;
+        _interactableHintPanel.gameObject.SetActive(true);
+    }
+
+    private void Disable()
+    {
+        _interactableHintPanel.gameObject.SetActive(false);
     }
 }
