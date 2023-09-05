@@ -56,7 +56,6 @@ public class MovementController : MonoBehaviour, IControllable
     private void EnableMovement()
     {
         _canMove = true;
-        _movement.EnableMove();
     }
 
     private void DisableMovement()

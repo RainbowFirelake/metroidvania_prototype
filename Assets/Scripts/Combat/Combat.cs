@@ -1,15 +1,16 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Combat : BasicCombat
 {
-    [SerializeField] private float _attackRange;
+    [SerializeField] private Weapon _currentWeapon;
     [SerializeField] private float _timeToContinueAttack = 2f;
     [SerializeField] private int _maxComboAttacks = 3;
 
     [SerializeField] private Stats _stats;
     [SerializeField] private AllyAndEnemySystem _allyAndEnemy;
     [SerializeField] private Transform _attackPoint;
-    [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private LayerMask _damageLayer;
 
     private float _timeAfterLastAttack = Mathf.Infinity;
     private bool _canAttack = true;
@@ -50,20 +51,39 @@ public class Combat : BasicCombat
 
     public override void Hit()
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+        var attackInfo = _currentWeapon.AttacksInfo[_currentComboAttack];
+        Collider2D[] hittedColliders = Physics2D.OverlapCircleAll(
             _attackPoint.position, 
-            _attackRange, 
-            _enemyLayer);
-        foreach(var enemy in hitEnemies)
+            attackInfo.AttackRange,
+            _damageLayer);
+
+        foreach (var collider in hittedColliders)
         {
-            var side = enemy.GetComponent<AllyAndEnemySystem>();
-            var enemyHealth = enemy.GetComponent<HealthSystem>();
-            if (enemyHealth && side && 
-            side.characterSide != _allyAndEnemy.characterSide)
-            {
-                enemyHealth.TakeDamage(_stats.GetStatValue(StatType.AttackDamage));
-            }
+            if (DealDamage(collider, attackInfo) 
+            && !_currentWeapon.CanHitMultipleEnemies)
+                return;
         }
+    }
+
+    // NEEDS TO REWRITE
+    // because dealdamage method must only deal damage
+    // not to compare sides
+    private bool DealDamage(Collider2D enemy, WeaponAttackInfo attackInfo)
+    {   
+        var side = enemy.GetComponent<AllyAndEnemySystem>();
+        var enemyHealth = enemy.GetComponent<HealthSystem>();
+        if (enemyHealth && side && side.characterSide != _allyAndEnemy.characterSide)
+        {
+            var enemyPosition = enemy.transform.position;
+            var position = this.transform.position;
+            var vector = new Vector2(5, 3);
+            enemyHealth.TakeDamage(attackInfo.Damage);
+            enemy.GetComponent<Rigidbody2D>().AddForce(
+                vector,
+                ForceMode2D.Impulse);
+            return true;
+        }
+        return false;
     }
 
     public override void AttackEnd()
@@ -85,7 +105,8 @@ public class Combat : BasicCombat
             return;
         }
 
-        Gizmos.DrawWireSphere(_attackPoint.position, _attackRange);
+
+        // Gizmos.DrawWireSphere(_attackPoint.position, _attackRange);
     }
 
     protected override void ResetStates()

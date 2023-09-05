@@ -12,6 +12,8 @@ public class ChestInteraction : MonoBehaviour, IWorldInteractable
     
     public Transform t { get; private set; }
 
+    public bool CanInteract { get; set; } = true;
+
     void Start()
     {
         t = this.transform;
@@ -19,6 +21,9 @@ public class ChestInteraction : MonoBehaviour, IWorldInteractable
 
     public void Interact(GameObject Interactor)
     {
+        if (!CanInteract) return;
+
         _chest.Open();
+        CanInteract = false;
     }
 }

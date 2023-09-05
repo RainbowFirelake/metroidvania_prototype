@@ -25,7 +25,7 @@ public class Interactor : MonoBehaviour
 
     private void Interaction()
     {
-        if (nearestInteractable != null)
+        if (nearestInteractable != null && nearestInteractable.CanInteract)
             OnInteractablePositionDetected?.Invoke(
                 nearestInteractable.t, nearestInteractable.InteractionName);
         else OnInteractableMissing?.Invoke();
