@@ -72,15 +72,14 @@ public class Combat : BasicCombat
     {   
         var side = enemy.GetComponent<AllyAndEnemySystem>();
         var enemyHealth = enemy.GetComponent<HealthSystem>();
+        var modifiable = enemy.GetComponent<ModifiableActor>();
         if (enemyHealth && side && side.characterSide != _allyAndEnemy.characterSide)
         {
-            var enemyPosition = enemy.transform.position;
-            var position = this.transform.position;
-            var vector = new Vector2(5, 3);
             enemyHealth.TakeDamage(attackInfo.Damage);
-            enemy.GetComponent<Rigidbody2D>().AddForce(
-                vector,
-                ForceMode2D.Impulse);
+            if (modifiable)
+            {
+                modifiable.AddModifier(_currentWeapon.Modifiers[0]);
+            }
             return true;
         }
         return false;

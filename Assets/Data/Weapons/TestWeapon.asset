@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55183f960f193974c83e8ddfbf017313, type: 3}
   m_Name: TestWeapon
   m_EditorClassIdentifier: 
-  _weaponAttacks:
+  <AttacksInfo>k__BackingField:
   - <Damage>k__BackingField: 15
     <AttackRange>k__BackingField: 1
-  - <Damage>k__BackingField: 25
-    <AttackRange>k__BackingField: 2
+  - <Damage>k__BackingField: 20
+    <AttackRange>k__BackingField: 1
   - <Damage>k__BackingField: 10
     <AttackRange>k__BackingField: 1
   <CanHitMultipleEnemies>k__BackingField: 1
+  <Modifiers>k__BackingField:
+  - {fileID: 11400000, guid: 8d4015a8ae9825645bb5f77ca09e4c38, type: 2}

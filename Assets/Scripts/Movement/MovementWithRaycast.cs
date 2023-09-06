@@ -175,9 +175,4 @@ public class MovementWithRaycast : BasicMovement
         moveDirectionX = 0;
         moveDirectionY = 0;
     }
-
-    public override void EnableMove()
-    {
-        
-    }
 }

@@ -51,5 +51,4 @@ public abstract class BasicMovement : MonoBehaviour
     
     public abstract void DisableMove();
     
-    public abstract void EnableMove();
 }

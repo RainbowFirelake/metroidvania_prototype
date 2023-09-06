@@ -57,12 +57,12 @@ public class MovementWithColliders : BasicMovement
             _moveParams.MoveSpeed * moveDirectionX,
             _rigidbody2D.velocity.y);
 
-        if (_moveParams.IsMovementActiveWhenInAir && !_isGrounded)
-        {
-            vector = new Vector2(
-                _moveParams.MoveSpeedInAir * moveDirectionX,
-                _rigidbody2D.velocity.y);
-        }
+        // if (_moveParams.IsMovementActiveWhenInAir && !_isGrounded)
+        // {
+        //     vector = new Vector2(
+        //         _moveParams.MoveSpeedInAir * moveDirectionX,
+        //         _rigidbody2D.velocity.y);
+        // }
 
         if (!_moveParams.IsMovementActiveWhenInAir && !_isGrounded)
         {
@@ -72,7 +72,7 @@ public class MovementWithColliders : BasicMovement
         _rigidbody2D.velocity = vector;
 
 
-        base.Move(_rigidbody2D.velocity.x + moveDirectionX, _rigidbody2D.velocity.y);
+        base.Move(moveDirectionX, _rigidbody2D.velocity.y);
     }
 
     protected override void JumpBehaviour(KeyState state)
@@ -158,10 +158,5 @@ public class MovementWithColliders : BasicMovement
     private void DisableGrounded()
     {
         _isGrounded = false;
-    }
-
-    public override void EnableMove()
-    {
-        
     }
 }
