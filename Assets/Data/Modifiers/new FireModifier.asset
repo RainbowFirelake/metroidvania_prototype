@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b7db323728226742ab41c765ec4da93, type: 3}
   m_Name: new FireModifier
   m_EditorClassIdentifier: 
-  <ModifierVFX>k__BackingField: {fileID: 0}
-  EffectTimes: 5
+  <Type>k__BackingField: 0
+  <VFX>k__BackingField: {fileID: 6192724089161036641, guid: e17d9a3f04750764c8c0a7a0461e4c3b, type: 3}
+  _effectTimes: 5
   _damage: 5

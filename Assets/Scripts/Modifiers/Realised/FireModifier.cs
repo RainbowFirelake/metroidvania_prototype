@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,29 +10,16 @@ public class FireModifier : BaseModifier
     [SerializeField]
     private float _damage;
 
-    private HealthSystem _health;
-    private Rigidbody2D _rigidbody;
-
     public override void BeginEffect(ModifiableActor target)
     {
-        _target = target;
-        _currentEffectTimes = 0;
-        _health = _target.GetComponent<HealthSystem>();
-        _rigidbody = _target.GetComponent<Rigidbody2D>();
+        
     }
 
-    public override IEnumerator GiveEffect(ModifiableActor target)
+    public override void GiveEffect(ModifiableActor target)
     {
-        BeginEffect(target);
-        while (_currentEffectTimes < EffectTimes)
-        {   
-            _health.TakeDamage(_damage);
-            _rigidbody.AddForce(new Vector2(0, 5), ForceMode2D.Impulse);
-            _currentEffectTimes++;
-            yield return new WaitForSeconds(1f);
-        }
-        EndEffect();
+        target.Health.TakeDamage(_damage);
     }
+    
 
     public override void EndEffect()
     {
