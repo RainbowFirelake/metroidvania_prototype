@@ -1,18 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimatorController : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
-    [SerializeField] private BasicMovement _movement;
+    [SerializeField] private BasicMovementBehaviour _movement;
     [SerializeField] private BasicCombat _combat;
+    [SerializeField] private DashBehaviour _dashBehaviour;
 
     private void OnEnable()
     {
-        _movement.OnMove += SetMoveState;  
-        _movement.OnDash += SetDashState;
-        
+        _movement.OnMove += SetMoveState;
+        _dashBehaviour.OnStartDash += SetDashState;
+        _dashBehaviour.OnEndDash += UnsetDashState;
+
         _combat.OnAttackStart += SetAttackStart;
         _combat.OnAttack += SetAttackState;
         _combat.OnAttackEnd += SetAttackEnd;
@@ -61,7 +61,12 @@ public class AnimatorController : MonoBehaviour
 
     private void SetDashState()
     {
-        _animator.SetTrigger("dash");
+        _animator.SetBool("dash", true);
+    }
+
+    private void UnsetDashState()
+    {
+        _animator.SetBool("dash", false);
     }
 
     private void ResetCombatStates()

@@ -1,10 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MovementController : MonoBehaviour, IControllable
 {
-    [SerializeField] private BasicMovement _movement;
+    [SerializeField]
+    private BasicMovementBehaviour _movement;
+    [SerializeField]
+    private DashBehaviour _dashBehaviour;
+    [SerializeField]
+    private JumpBehaviour _jumpBehaviour;
+
     [SerializeField] private BasicCombat _combat;
 
     private bool _canMove = true;
@@ -28,7 +32,7 @@ public class MovementController : MonoBehaviour, IControllable
 
     public void Attack()
     {
-        if (!_movement.isGrounded || _movement.IsDashing) return;
+        if (!_jumpBehaviour.IsGrounded || _dashBehaviour.IsDashing) return;
 
         _combat.Attack();
     }
@@ -40,12 +44,12 @@ public class MovementController : MonoBehaviour, IControllable
 
     public void Dash()
     {
-        _movement.Dash();
+        _dashBehaviour.DashIfCan(_movement.MovementDirection.x);
     }
 
     public void Jump(KeyState state = KeyState.Default)
     {
-        _movement.Jump(state);
+        _jumpBehaviour.Jump(_movement.MovementDirection, state);
     }
 
     private void StopMove()

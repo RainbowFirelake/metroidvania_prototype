@@ -3,7 +3,7 @@ using UnityEngine;
 public class FlipSprite : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private BasicMovement _movement;
+    [SerializeField] private BasicMovementBehaviour _movement;
     [SerializeField] private Transform _attackPoint;
 
     private Direction _currentDirection = Direction.Right;
