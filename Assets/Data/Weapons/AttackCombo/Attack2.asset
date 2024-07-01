@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be57b17d4412c84c840b8919abd92de, type: 3}
   m_Name: Attack2
   m_EditorClassIdentifier: 
-  <AttackAnimation>k__BackingField: {fileID: 0}
-  <AnimationHash>k__BackingField: 
+  <AttackAnimation>k__BackingField: {fileID: 7400000, guid: 3688e492878501d4882fffca4cb3bbff, type: 2}
+  <AnimationHash>k__BackingField: 793588646
   <DamagePercentModifier>k__BackingField: 1
   <AttackRange>k__BackingField: 1

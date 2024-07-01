@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: TestWeapon
   m_EditorClassIdentifier: 
   <AttacksInfo>k__BackingField:
-  - <Damage>k__BackingField: 15
-    <AttackRange>k__BackingField: 1
-  - <Damage>k__BackingField: 20
-    <AttackRange>k__BackingField: 1
-  - <Damage>k__BackingField: 10
-    <AttackRange>k__BackingField: 1
+  - {fileID: 11400000, guid: 5ee76e9c9bde98d42a21fd43124e75fd, type: 2}
+  - {fileID: 11400000, guid: b9de1190a383da34595df5d605c6c6c7, type: 2}
+  - {fileID: 11400000, guid: a8e5679611cdda543b520153375826c1, type: 2}
+  Damage: 10
   <CanHitMultipleEnemies>k__BackingField: 1
   <Modifiers>k__BackingField:
   - {fileID: 11400000, guid: 8d4015a8ae9825645bb5f77ca09e4c38, type: 2}

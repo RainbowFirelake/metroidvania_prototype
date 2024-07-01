@@ -15318,6 +15318,14 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5160956099301663872, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+      propertyPath: _canDash
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5160956099301663872, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+      propertyPath: _moveParams
+      value: 
+      objectReference: {fileID: 11400000, guid: 2d49397b9d2ff8742818a256ccf55de3, type: 2}
     - target: {fileID: 5436754357209049361, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
       propertyPath: _dashBehaviour
       value: 
@@ -15326,6 +15334,18 @@ PrefabInstance:
       propertyPath: _jumpBehaviour
       value: 
       objectReference: {fileID: 844959521}
+    - target: {fileID: 5436754357209049361, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+      propertyPath: _attackerBehaviour
+      value: 
+      objectReference: {fileID: 844959530}
+    - target: {fileID: 8102453559117375106, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+      propertyPath: _moveParams
+      value: 
+      objectReference: {fileID: 11400000, guid: 2d49397b9d2ff8742818a256ccf55de3, type: 2}
+    - target: {fileID: 8102453559117375106, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+      propertyPath: _groundDetector
+      value: 
+      objectReference: {fileID: 1152217633}
     - target: {fileID: 8476221124347769104, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
       propertyPath: m_Size.x
       value: 0.7051511
@@ -15394,6 +15414,14 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0.56084776
       objectReference: {fileID: 0}
+    - target: {fileID: 8476221124718660833, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+      propertyPath: _dasher
+      value: 
+      objectReference: {fileID: 844959524}
+    - target: {fileID: 8476221124718660833, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+      propertyPath: _attacker
+      value: 
+      objectReference: {fileID: 844959530}
     - target: {fileID: 8476221124718660833, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
       propertyPath: _dashBehaviour
       value: 
@@ -15468,6 +15496,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -8174454370519450668, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+    - {fileID: 8476221124718660830, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -15539,6 +15568,28 @@ MonoBehaviour:
   IsDashing: 0
   _rigidbody2D: {fileID: 844959510}
   _moveParams: {fileID: 11400000, guid: 2d49397b9d2ff8742818a256ccf55de3, type: 2}
+--- !u!114 &844959524 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5160956099301663872, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+  m_PrefabInstance: {fileID: 844959505}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844959506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e79b42191eef9146aa8d8eca0826fa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &844959530 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8476221124718660839, guid: 2c42787c91a9fe54ab1f4e4e1a223a07, type: 3}
+  m_PrefabInstance: {fileID: 844959505}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844959506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 391670652721b7146a7d0127304a3c47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!20 &894504663 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 8357969342258424233, guid: 6da8ba79f083e0c4ca3410c0e78741f3, type: 3}
