@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityUtils;
 
 namespace Metroidvania.Movement
 {
@@ -30,8 +29,6 @@ namespace Metroidvania.Movement
             //DetectGround();
             Move(MovementDirection.x);
 
-            if (_moveParams.CanClimbOnWalls) Climb(MovementDirection.y);
-
             _timeAfterExitingGround += Time.deltaTime;
         }
 
@@ -52,37 +49,6 @@ namespace Metroidvania.Movement
                 return;
             }
 
-            //if (IsGrounded)
-            //{
-            //    velocity = new Vector2(
-            //        _moveParams.MoveSpeed * direction, // x
-            //        _rigidbody2D.velocity.y // y
-            //    );
-            //}
-            //else
-            //{
-            //    velocity = new Vector2(
-            //        _moveParams.MoveSpeedInAir * direction, // x
-            //        _rigidbody2D.velocity.y // y
-            //    );
-            //}
-
-            _rigidbody2D.velocity = velocity;
-            //Debug.Log("x speed: " + _rigidbody2D.velocity.x + "y speed: " + _rigidbody2D.velocity.y);
-        }
-
-        public void Climb(float direction)
-        {
-            if (!_isClimbing) return;
-            Vector2 velocity = new Vector2();
-            if (_isClimbing)
-            {
-                velocity = new Vector2(
-                    _rigidbody2D.velocity.x, // x
-                    _moveParams.ClimbSpeed * direction   // y
-                );
-            }
-
             _rigidbody2D.velocity = velocity;
         }
 
@@ -94,83 +60,6 @@ namespace Metroidvania.Movement
                 length,
                 layerMask
             );
-        }
-
-        //public bool DetectWall(float horizontalDirection)
-        //{
-        //    var layerMask = LayerMask.GetMask("Ground");
-        //    Vector2 horizontal = Vector2.right * horizontalDirection;
-        //    var hit1 = Physics2D.Raycast(
-        //        _transform.position,
-        //        horizontal,
-        //        _raycastWallLength,
-        //        layerMask
-        //    );
-
-        //    var hit2 = Physics2D.Raycast(
-        //        _transform.position - new Vector3(0, _transform.localScale.y / 2),
-        //        horizontal,
-        //        _raycastWallLength,
-        //        layerMask
-        //    );
-
-        //    var hit3 = Physics2D.Raycast(
-        //        _transform.position + new Vector3(0, _transform.localScale.y / 2),
-        //        horizontal,
-        //        _raycastWallLength,
-        //        layerMask
-        //    );
-
-        //    if (hit1 || hit2 || hit3)
-        //    {
-        //        _isClimbing = true;
-        //        return true;
-        //    }
-
-        //    _isClimbing = false;
-        //    return false;
-        //}
-
-        //public void DetectGround()
-        //{
-        //    var hit = RaycastDetection(
-        //        Vector2.down,
-        //        LayerMask.GetMask("Ground"),
-        //        _raycastGroundLength
-        //    );
-
-        //    if (hit)
-        //    {
-        //        _timeAfterExitingGround = 0;
-        //        IsGrounded = true;
-        //        return;
-        //    }
-        //    IsGrounded = false;
-        //}
-
-        //protected override void JumpBehaviour(KeyState state = KeyState.Default)
-        //{
-        //    if (!_isGrounded && _timeAfterExitingGround > _moveParams.CoyoteTime) return;
-
-        //    Vector2 jumpDirection = new Vector2(
-        //        _rigidbody2D.velocity.x * moveDirectionX,
-        //        _moveParams.JumpStrength
-        //    );
-        //    _rigidbody2D.AddForce(jumpDirection, ForceMode2D.Impulse);
-        //}
-
-        //protected override void DashBehaviour()
-        //{
-        //    if (_isGrounded)
-        //    {
-        //        Vector2 dashDirection = new Vector2(_moveParams.DashStrength * _lastMoveDirection, 0);
-        //        _rigidbody2D.AddForce(dashDirection, ForceMode2D.Impulse);
-        //    }
-        //}
-
-        public override void DisableMove()
-        {
-            MovementDirection.With(0, 0);
         }
     }
 }

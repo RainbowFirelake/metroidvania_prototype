@@ -1,9 +1,10 @@
+using Metroidvania.Movement;
 using UnityEngine;
 
 public class FlipSprite : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private BasicMovementBehaviour _movement;
+    [SerializeField] private RigidbodyMovementBehaviour _movement;
     [SerializeField] private Transform _attackPoint;
 
     private Direction _currentDirection = Direction.Right;

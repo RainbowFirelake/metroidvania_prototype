@@ -1,32 +1,19 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 
-public abstract class BasicCombat : MonoBehaviour
+public class Combat : MonoBehaviour
 {
     public event Action OnAttackStart;
+    public event Action<string> OnAttackAnimationHash;
     public event Action<int> OnAttack;
     public event Action OnAttackEnd;
 
     public event Action OnResetStates;
     public event Action<bool> OnBlock;
 
-    protected int _currentComboAttack = 0;
-
-    public virtual void AttackStart()
-    {
-        OnAttackStart?.Invoke();
-    }
-
     public virtual void Attack()
     {
-        OnAttack?.Invoke(_currentComboAttack);
-    }
-    
-    public abstract void Hit();
-
-    public virtual void IncreaseComboCount()
-    {
-        _currentComboAttack++;
+        OnAttackStart?.Invoke();
     }
 
     public virtual void AttackEnd()
@@ -39,9 +26,13 @@ public abstract class BasicCombat : MonoBehaviour
         OnBlock?.Invoke(blockState);
     }
 
+    protected void InvokeOnAttackAnimationHash(string hash)
+    {
+        OnAttackAnimationHash?.Invoke(hash);
+    }
+
     protected virtual void ResetStates()
     {
-        _currentComboAttack = 0;
         OnResetStates?.Invoke();
     }
 }

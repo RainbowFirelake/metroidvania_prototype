@@ -1,15 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-[CreateAssetMenu(fileName = "New Weapon", menuName = "Weapons/New Weapon")]
-public class Weapon : ScriptableObject
+namespace Metroidvania.Combat
 {
-    [field : SerializeField]
-    public List<WeaponAttackInfo> AttacksInfo { get; private set; } = null;
-    [field : SerializeField]
-    public bool CanHitMultipleEnemies { get; private set; } = true;
-    [field : SerializeField]
-    public List<BaseModifier> Modifiers { get; private set; } = null;
+    [CreateAssetMenu(fileName = "New Weapon", menuName = "Weapons/New Weapon")]
+    public class Weapon : ScriptableObject
+    {
+        [field: SerializeField]
+        public List<AttackData> AttacksInfo { get; private set; } = null;
+        [field: SerializeField]
+        public float Damage = 10f;
+        [field: SerializeField]
+        public bool CanHitMultipleEnemies { get; private set; } = true;
+        [field: SerializeField]
+        public List<BaseModifier> Modifiers { get; private set; } = null;
+    }
 }

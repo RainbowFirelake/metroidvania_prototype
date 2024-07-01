@@ -8,13 +8,13 @@ public class DashBehaviour : MonoBehaviour
     public event Action OnStartDash;
     public event Action OnEndDash;
 
+    public bool _canDash;
+    public bool IsDashing;
+
     [SerializeField]
     private Rigidbody2D _rigidbody2D;
     [SerializeField]
     private MoveParams _moveParams;
-
-    public bool _canDash;
-    public bool IsDashing;
 
     private void OnValidate()
     {

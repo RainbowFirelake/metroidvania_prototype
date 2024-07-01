@@ -1,31 +1,26 @@
+using Metroidvania.Combat;
+using Metroidvania.Movement;
 using UnityEngine;
 
 public class AnimatorController : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private BasicMovementBehaviour _movement;
-    [SerializeField] private BasicCombat _combat;
-    [SerializeField] private DashBehaviour _dashBehaviour;
+    [SerializeField] private AttackerBehaviour _attacker;
+    [SerializeField] private DashBehaviour _dasher;
 
     private void OnEnable()
     {
         _movement.OnMove += SetMoveState;
-        _dashBehaviour.OnStartDash += SetDashState;
-        _dashBehaviour.OnEndDash += UnsetDashState;
+        _dasher.OnStartDash += SetDashState;
+        _dasher.OnEndDash += UnsetDashState;
 
-        _combat.OnAttackStart += SetAttackStart;
-        _combat.OnAttack += SetAttackState;
-        _combat.OnAttackEnd += SetAttackEnd;
-        _combat.OnBlock += SetBlockState;
-        _combat.OnResetStates += ResetCombatStates;
+        _attacker.OnAttackStart += SetAttackStart;
     }
 
     private void OnDisable()
     {
         _movement.OnMove -= SetMoveState;
-        _combat.OnAttack -= SetAttackState;
-        _combat.OnBlock -= SetBlockState;
-        _combat.OnResetStates -= ResetCombatStates;
     }
 
     private void SetMoveState(float horizontalSpeed, float verticalSpeed)
@@ -39,19 +34,14 @@ public class AnimatorController : MonoBehaviour
         _animator.SetBool("InAir", isInAir);
     }
 
-    private void SetAttackStart()
+    private void SetAttackStart(int animationHash)
     {
-        _animator.SetTrigger("startAttack");
+        _animator.Play(animationHash, 0);
     }
 
     private void SetAttackState(int comboCount)
     {
         _animator.SetInteger("comboCount", comboCount);
-    }
-
-    private void SetAttackEnd()
-    {
-        _animator.SetTrigger("endAttack");
     }
 
     private void SetBlockState(bool state)
