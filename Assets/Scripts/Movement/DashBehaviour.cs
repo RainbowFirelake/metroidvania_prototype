@@ -1,9 +1,14 @@
+using Metroidvania.Movement;
 using System;
 using System.Collections;
 using UnityEngine;
 
+namespace Metroidvania.Movement
+{
+
+}
 [RequireComponent(typeof(Rigidbody2D))]
-public class DashBehaviour : MonoBehaviour
+public class DashBehaviour : MonoBehaviour, IFixedUpdate
 {
     public event Action OnStartDash;
     public event Action OnEndDash;
@@ -29,6 +34,19 @@ public class DashBehaviour : MonoBehaviour
         }
     }
 
+    public void HandleFixedUpdate()
+    {
+
+    }
+
+    public void InterruptDash()
+    {
+        StopCoroutine(DashCoroutine(0));
+        OnEndDash?.Invoke();
+        IsDashing = false;
+        _canDash = true;
+    }
+
     private IEnumerator DashCoroutine(float directionX)
     {
         _canDash = false;
@@ -36,16 +54,16 @@ public class DashBehaviour : MonoBehaviour
         float originalGravity = _rigidbody2D.gravityScale;
         _rigidbody2D.gravityScale = 0f;
         _rigidbody2D.velocity = new Vector2(
-            directionX *
-            _moveParams.DashStrength, 0f);
+            directionX * _moveParams.DashStrength,
+            0f);
 
         OnStartDash?.Invoke();
 
         yield return new WaitForSeconds(_moveParams.DashTime);
         _rigidbody2D.gravityScale = originalGravity;
-        IsDashing = false;
 
         yield return new WaitForSeconds(_moveParams.DashCooldown);
+        IsDashing = false;
 
         _canDash = true;
         OnEndDash?.Invoke();

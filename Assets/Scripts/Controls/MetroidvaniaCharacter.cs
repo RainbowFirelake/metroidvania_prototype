@@ -13,7 +13,7 @@ namespace Metroidvania.CharacterControllers
     public class MetroidvaniaCharacter : MonoBehaviour, IControllable
     {
         [SerializeField]
-        private BasicMovementBehaviour _movement;
+        private BasicMovementBehaviour _movementBehaviour;
         [SerializeField]
         private DashBehaviour _dashBehaviour;
         [SerializeField]
@@ -22,11 +22,44 @@ namespace Metroidvania.CharacterControllers
         [SerializeField]
         private AttackerBehaviour _attackerBehaviour;
 
+        private IFixedUpdate _currentFixedUpdatable;
+
         private bool _canMove = true;
+
+        private void OnValidate()
+        {
+            _movementBehaviour = GetComponent<BasicMovementBehaviour>();
+            _dashBehaviour = GetComponent<DashBehaviour>();
+            _jumpBehaviour = GetComponent<JumpBehaviour>();
+            _attackerBehaviour = GetComponent<AttackerBehaviour>();
+        }
+
+        private void Start()
+        {
+            _currentFixedUpdatable = _movementBehaviour;
+        }
 
         private void OnEnable()
         {
+            _attackerBehaviour.OnAttackStart += DisableMovement;
             _attackerBehaviour.OnAttackEnd += EnableMovement;
+
+            _dashBehaviour.OnStartDash += SetDashBehaviourFixedUpdate;
+            _dashBehaviour.OnEndDash += SetMovementBehaviourFixedUpdate;
+        }
+
+        private void OnDisable()
+        {
+            _attackerBehaviour.OnAttackEnd -= EnableMovement;
+            _attackerBehaviour.OnAttackStart -= DisableMovement;
+
+            _dashBehaviour.OnStartDash -= SetDashBehaviourFixedUpdate;
+            _dashBehaviour.OnEndDash -= SetMovementBehaviourFixedUpdate;
+        }
+
+        private void FixedUpdate()
+        {
+            _currentFixedUpdatable?.HandleFixedUpdate();
         }
 
         public void MoveControllable(float horizontalInput, float verticalInput)
@@ -36,13 +69,18 @@ namespace Metroidvania.CharacterControllers
                 return;
             }
 
-            _movement.SetDirection(horizontalInput, verticalInput);
+            _movementBehaviour.SetDirection(horizontalInput, verticalInput);
         }
 
         public void Attack()
         {
-            if (!_jumpBehaviour.IsGrounded || _dashBehaviour.IsDashing)
+            if (!_jumpBehaviour.IsGrounded)
                 return;
+
+            if (_dashBehaviour.IsDashing)
+            {
+                _dashBehaviour.InterruptDash();
+            }
 
             _attackerBehaviour.Attack();
         }
@@ -55,23 +93,31 @@ namespace Metroidvania.CharacterControllers
 
         public void Dash()
         {
-            _dashBehaviour.DashIfCan(_movement.MovementDirection.x);
+            _attackerBehaviour.InterruptAttack();
+            _dashBehaviour.DashIfCan(_movementBehaviour.MovementDirection.x);
+            _canMove = true;
         }
 
         public void Jump(KeyState state = KeyState.Default)
         {
-            _jumpBehaviour.Jump(_movement.MovementDirection, state);
+            _jumpBehaviour.Jump(_movementBehaviour.MovementDirection, state);
         }
 
         private void EnableMovement()
         {
             _canMove = true;
+            Debug.Log(_canMove);
         }
 
-        private void DisableMovement()
+        private void DisableMovement(int hash)
         {
             _canMove = false;
+            _movementBehaviour.Stop();
         }
+
+        private void SetDashBehaviourFixedUpdate() => _currentFixedUpdatable = _dashBehaviour;
+
+        private void SetMovementBehaviourFixedUpdate() => _currentFixedUpdatable = _movementBehaviour;
     }
 }
 

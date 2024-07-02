@@ -14,14 +14,14 @@ public class FlipSprite : MonoBehaviour
         _movement.OnMove += FlipX;
     }
 
-    private void FlipX(float horizontalSpeed, float verticalSpeed)
+    private void FlipX(Vector2 speed)
     {
-        if (horizontalSpeed <= -0.01f)
+        if (speed.x <= -0.01f)
         {
             _spriteRenderer.flipX = true;
             FlipAttackPoint(Direction.Left);
         }
-        else if (horizontalSpeed >= 0.01f)
+        else if (speed.x >= 0.01f)
         {
             _spriteRenderer.flipX = false;
             FlipAttackPoint(Direction.Right);

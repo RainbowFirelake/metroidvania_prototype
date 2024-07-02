@@ -10,21 +10,13 @@ namespace Metroidvania.Movement
         [SerializeField] private MoveParams _moveParams;
         [SerializeField] private Rigidbody2D _rigidbody2D;
 
-        [SerializeField] private WallDetector _leftDetector;
-        [SerializeField] private WallDetector _rightDetector;
-
-        private void FixedUpdate()
+        protected override void Move()
         {
-            Move();
-        }
-
-        protected void Move()
-        {
-            base.Move(MovementDirection.x, _rigidbody2D.velocity.y);
-
             var vector = new Vector2(
                 _moveParams.MoveSpeed * MovementDirection.x,
                 _rigidbody2D.velocity.y);
+
+            InvokeOnMove(vector);
 
             _rigidbody2D.velocity = vector;
         }

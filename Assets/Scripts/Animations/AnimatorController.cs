@@ -12,6 +12,7 @@ public class AnimatorController : MonoBehaviour
     private void OnEnable()
     {
         _movement.OnMove += SetMoveState;
+
         _dasher.OnStartDash += SetDashState;
         _dasher.OnEndDash += UnsetDashState;
 
@@ -21,12 +22,17 @@ public class AnimatorController : MonoBehaviour
     private void OnDisable()
     {
         _movement.OnMove -= SetMoveState;
+
+        _dasher.OnStartDash -= SetDashState;
+        _dasher.OnEndDash -= UnsetDashState;
+
+        _attacker.OnAttackStart -= SetAttackStart;
     }
 
-    private void SetMoveState(float horizontalSpeed, float verticalSpeed)
+    private void SetMoveState(Vector2 speed)
     {
-        _animator.SetFloat("horizontalSpeed", Mathf.Abs(horizontalSpeed));
-        _animator.SetFloat("verticalSpeed", verticalSpeed);
+        _animator.SetFloat("horizontalSpeed", Mathf.Abs(speed.x));
+        _animator.SetFloat("verticalSpeed", speed.y);
     }
 
     private void SetInAirState(bool isInAir)
@@ -51,17 +57,13 @@ public class AnimatorController : MonoBehaviour
 
     private void SetDashState()
     {
+        Debug.Log("Set Dash State");
         _animator.SetBool("dash", true);
     }
 
     private void UnsetDashState()
     {
+        Debug.Log("Unset Dash State");
         _animator.SetBool("dash", false);
-    }
-
-    private void ResetCombatStates()
-    {
-        _animator.SetInteger("comboCount", 0);
-        _animator.ResetTrigger("startAttack");
     }
 }

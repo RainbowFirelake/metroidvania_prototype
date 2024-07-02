@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Metroidvania.Movement
 {
-    public abstract class BasicMovementBehaviour : MonoBehaviour
+    public abstract class BasicMovementBehaviour : MonoBehaviour, IFixedUpdate
     {
-        public event Action<float, float> OnMove;
+        public event Action<Vector2> OnMove;
 
         public Vector2 MovementDirection { get; private set; } = Vector2.zero;
 
@@ -16,10 +16,21 @@ namespace Metroidvania.Movement
                 Mathf.Clamp(directionY, -1, 1));
         }
 
-        protected virtual void Move(float moveSpeedX, float moveSpeedY)
+        public void Stop()
         {
-            OnMove?.Invoke(moveSpeedX, moveSpeedY);
+            MovementDirection = new Vector2();
         }
 
+        protected abstract void Move();
+
+        public void HandleFixedUpdate()
+        {
+            Move();
+        }
+
+        public void InvokeOnMove(Vector2 speedVector)
+        {
+            OnMove?.Invoke(speedVector);
+        }
     }
 }

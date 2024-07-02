@@ -41,11 +41,21 @@ namespace Metroidvania.Combat
             {
                 _timeAfterLastAttack = 0;
                 _canAttack = true;
-                OnAttackEnd?.Invoke();
                 ResetStates();
             }
 
             UpdateTimers();
+        }
+
+        public void InterruptAttack()
+        {
+            if (!_canAttack)
+            {
+                _canAttack = true;
+                _timeAfterLastAttack = 0;
+                _isComboTimerActive = true;
+                OnAttackEnd?.Invoke();
+            }
         }
 
         public void Attack()
@@ -105,6 +115,7 @@ namespace Metroidvania.Combat
             _timeAfterLastAttack = 0;
             _currentCombo++;
             _isComboTimerActive = true;
+            OnAttackEnd?.Invoke();
         }
 
         private void OnDrawGizmos()
