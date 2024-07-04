@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Metroidvania.Movement
@@ -27,6 +28,16 @@ namespace Metroidvania.Movement
         {
             Move();
         }
+
+        public void InterruptMovementDuringGivenSeconds(float seconds)
+        {
+            ResetMovementState();
+            StartCoroutine(InterruptMovement(seconds));
+        }
+
+        public abstract void ResetMovementState();
+
+        protected abstract IEnumerator InterruptMovement(float seconds);
 
         public void InvokeOnMove(Vector2 speedVector)
         {

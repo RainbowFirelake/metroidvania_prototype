@@ -1,71 +1,72 @@
-using Metroidvania.Movement;
 using System;
 using System.Collections;
 using UnityEngine;
 
 namespace Metroidvania.Movement
 {
-
-}
-[RequireComponent(typeof(Rigidbody2D))]
-public class DashBehaviour : MonoBehaviour, IFixedUpdate
-{
-    public event Action OnStartDash;
-    public event Action OnEndDash;
-
-    public bool _canDash;
-    public bool IsDashing;
-
-    [SerializeField]
-    private Rigidbody2D _rigidbody2D;
-    [SerializeField]
-    private MoveParams _moveParams;
-
-    private void OnValidate()
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class DashBehaviour : MonoBehaviour, IFixedUpdate
     {
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-    }
+        public event Action OnStartDash;
+        public event Action OnEndDash;
 
-    public void DashIfCan(float directionX)
-    {
-        if (_canDash)
+        public bool CanDash;
+        public bool IsDashing { get; private set; }
+        public float LastDirectionX { get; set; }
+
+        [SerializeField]
+        private Rigidbody2D _rigidbody2D;
+        [SerializeField]
+        private MoveParams _moveParams;
+
+        private void OnValidate()
         {
-            StartCoroutine(DashCoroutine(directionX));
+            _rigidbody2D = GetComponent<Rigidbody2D>();
         }
-    }
 
-    public void HandleFixedUpdate()
-    {
+        public void DashIfCan(float directionX)
+        {
+            if (CanDash)
+            {
+                StartCoroutine(DashCoroutine(directionX));
+            }
+        }
 
-    }
+        public void HandleFixedUpdate()
+        {
 
-    public void InterruptDash()
-    {
-        StopCoroutine(DashCoroutine(0));
-        OnEndDash?.Invoke();
-        IsDashing = false;
-        _canDash = true;
-    }
+        }
 
-    private IEnumerator DashCoroutine(float directionX)
-    {
-        _canDash = false;
-        IsDashing = true;
-        float originalGravity = _rigidbody2D.gravityScale;
-        _rigidbody2D.gravityScale = 0f;
-        _rigidbody2D.velocity = new Vector2(
-            directionX * _moveParams.DashStrength,
-            0f);
+        public void InterruptDash()
+        {
+            StopCoroutine(DashCoroutine(0));
+            OnEndDash?.Invoke();
+            IsDashing = false;
+            CanDash = true;
+        }
 
-        OnStartDash?.Invoke();
+        private IEnumerator DashCoroutine(float directionX)
+        {
+            CanDash = false;
+            IsDashing = true;
+            float originalGravity = _rigidbody2D.gravityScale;
+            _rigidbody2D.gravityScale = 0f;
+            _rigidbody2D.velocity = new Vector2(
+                (directionX != 0
+                    ? directionX
+                    : LastDirectionX) * _moveParams.DashStrength,
+                0f);
 
-        yield return new WaitForSeconds(_moveParams.DashTime);
-        _rigidbody2D.gravityScale = originalGravity;
+            OnStartDash?.Invoke();
 
-        yield return new WaitForSeconds(_moveParams.DashCooldown);
-        IsDashing = false;
+            yield return new WaitForSeconds(_moveParams.DashTime);
+            _rigidbody2D.gravityScale = originalGravity;
 
-        _canDash = true;
-        OnEndDash?.Invoke();
+            yield return new WaitForSeconds(_moveParams.DashCooldown);
+            IsDashing = false;
+
+            CanDash = true;
+            OnEndDash?.Invoke();
+        }
     }
 }

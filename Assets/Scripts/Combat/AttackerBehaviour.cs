@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Metroidvania.Combat
@@ -8,6 +9,8 @@ namespace Metroidvania.Combat
         public event Action<int> OnAttackStart;
         public event Action OnAttackEnd;
 
+        [field: SerializeField]
+        public bool CanAttack { get; private set; } = true;
         public int CurrentMaxComboAttacks
         {
             get => _currentWeapon != null
@@ -24,14 +27,13 @@ namespace Metroidvania.Combat
         [SerializeField] private LayerMask _damageLayer;
 
         private float _timeAfterLastAttack = Mathf.Infinity;
-        private bool _canAttack = true;
         private int _currentCombo = 0;
 
         private bool _isComboTimerActive = false;
 
         void Start()
         {
-            _canAttack = true;
+            CanAttack = true;
         }
 
         private void Update()
@@ -40,7 +42,7 @@ namespace Metroidvania.Combat
                 || _currentCombo >= CurrentMaxComboAttacks)
             {
                 _timeAfterLastAttack = 0;
-                _canAttack = true;
+                CanAttack = true;
                 ResetStates();
             }
 
@@ -49,9 +51,9 @@ namespace Metroidvania.Combat
 
         public void InterruptAttack()
         {
-            if (!_canAttack)
+            if (!CanAttack)
             {
-                _canAttack = true;
+                CanAttack = true;
                 _timeAfterLastAttack = 0;
                 _isComboTimerActive = true;
                 OnAttackEnd?.Invoke();
@@ -60,7 +62,7 @@ namespace Metroidvania.Combat
 
         public void Attack()
         {
-            if (!_canAttack)
+            if (!CanAttack)
             {
                 return;
             }
@@ -69,7 +71,9 @@ namespace Metroidvania.Combat
 
             _isComboTimerActive = false;
 
-            _canAttack = false;
+            CanAttack = false;
+
+            StartCoroutine(UnblockAttackState(_currentWeapon.AttacksInfo[_currentCombo].AttackAnimation.length));
         }
 
         public void Hit()
@@ -86,6 +90,13 @@ namespace Metroidvania.Combat
                 if (DealDamage(collider, attackInfo) && !_currentWeapon.CanHitMultipleEnemies)
                     return;
             }
+        }
+
+        public float GetNextAttackAnimationDurationInSeconds()
+        {
+            return _currentCombo + 1 < CurrentMaxComboAttacks
+                ? _currentWeapon.AttacksInfo[_currentCombo + 1].GetAnimationDurationInSeconds()
+                : 0;
         }
 
         private bool DealDamage(Collider2D enemy, AttackData attackInfo)
@@ -109,9 +120,15 @@ namespace Metroidvania.Combat
             return false;
         }
 
+        public IEnumerator UnblockAttackState(float durationInSeconds)
+        {
+            yield return new WaitForSeconds(durationInSeconds);
+            AttackEnd();
+        }
+
         public void AttackEnd()
         {
-            _canAttack = true;
+            CanAttack = true;
             _timeAfterLastAttack = 0;
             _currentCombo++;
             _isComboTimerActive = true;
@@ -131,7 +148,7 @@ namespace Metroidvania.Combat
         protected void ResetStates()
         {
             _currentCombo = 0;
-            _canAttack = true;
+            CanAttack = true;
         }
 
         private void UpdateTimers()

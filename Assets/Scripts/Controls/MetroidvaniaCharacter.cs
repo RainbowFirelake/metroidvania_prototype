@@ -60,6 +60,11 @@ namespace Metroidvania.CharacterControllers
         private void FixedUpdate()
         {
             _currentFixedUpdatable?.HandleFixedUpdate();
+
+            if (_movementBehaviour.MovementDirection.x != 0)
+            {
+                _dashBehaviour.LastDirectionX = _movementBehaviour.MovementDirection.x;
+            }
         }
 
         public void MoveControllable(float horizontalInput, float verticalInput)
@@ -74,8 +79,16 @@ namespace Metroidvania.CharacterControllers
 
         public void Attack()
         {
-            if (!_jumpBehaviour.IsGrounded)
+            if (!_attackerBehaviour.CanAttack)
+            {
                 return;
+            }
+
+            if (!_jumpBehaviour.IsGrounded)
+            {
+                _movementBehaviour.InterruptMovementDuringGivenSeconds(
+                    _attackerBehaviour.GetNextAttackAnimationDurationInSeconds());
+            }
 
             if (_dashBehaviour.IsDashing)
             {
@@ -94,8 +107,8 @@ namespace Metroidvania.CharacterControllers
         public void Dash()
         {
             _attackerBehaviour.InterruptAttack();
+            _movementBehaviour.ResetMovementState();
             _dashBehaviour.DashIfCan(_movementBehaviour.MovementDirection.x);
-            _canMove = true;
         }
 
         public void Jump(KeyState state = KeyState.Default)

@@ -21,5 +21,7 @@ namespace Metroidvania.Combat
         {
             AnimationHash = Animator.StringToHash(AttackAnimation.name);
         }
+
+        public float GetAnimationDurationInSeconds() => AttackAnimation.length;
     }
 }

@@ -17,6 +17,7 @@ public class AnimatorController : MonoBehaviour
         _dasher.OnEndDash += UnsetDashState;
 
         _attacker.OnAttackStart += SetAttackStart;
+        _attacker.OnAttackEnd += SetAttackEnd;
     }
 
     private void OnDisable()
@@ -27,6 +28,7 @@ public class AnimatorController : MonoBehaviour
         _dasher.OnEndDash -= UnsetDashState;
 
         _attacker.OnAttackStart -= SetAttackStart;
+        _attacker.OnAttackEnd += SetAttackEnd;
     }
 
     private void SetMoveState(Vector2 speed)
@@ -43,6 +45,12 @@ public class AnimatorController : MonoBehaviour
     private void SetAttackStart(int animationHash)
     {
         _animator.Play(animationHash, 0);
+        _animator.SetBool("InAttack", true);
+    }
+
+    private void SetAttackEnd()
+    {
+        _animator.SetBool("InAttack", false);
     }
 
     private void SetAttackState(int comboCount)
