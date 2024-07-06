@@ -1,172 +1,200 @@
-using System.Collections;
+using Metroidvania.AI.BehaviorTree;
+using Metroidvania.AI.ConcreteBehaviours;
+using Metroidvania.CharacterControllers;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(IControllable))]
-public class AIController : MonoBehaviour
+namespace Metroidvania.AI
 {
-    [SerializeField] private AIData _aiData;
-    [SerializeField] IControllable _controllable;
-    [SerializeField] private AllyAndEnemySystem _allyAndEnemy;
-    [SerializeField] private DetectionArea _detectionArea;
-
-    private List<AllyAndEnemySystem> _detectedCharacters;
-    private AllyAndEnemySystem _nearestEnemy;
-    private Transform _transform;
-    
-    private float _timeAfterLastBehaviourUpdate = 0;
-    private float _timeAfterLastAttack = 0;
-
-    void Start()
+    [RequireComponent(typeof(IControllable))]
+    public class AIController : MonoBehaviour
     {
-        _detectedCharacters = new List<AllyAndEnemySystem>();
-        _transform = GetComponent<Transform>();
-        _controllable = GetComponent<IControllable>();
-    }
+        [SerializeField] private AIData _aiData;
+        [SerializeField] MetroidvaniaCharacter _character;
+        [SerializeField] private AllyAndEnemySystem _allyAndEnemy;
+        [SerializeField] private DetectionArea _detectionArea;
 
-    void OnEnable()
-    {
-        _detectionArea.OnCharacterEnter += AddToDetectedCharacters;
-        _detectionArea.OnCharacterExit += DeleteFromDetectedCharacters;
-    }
+        [SerializeField] private List<Transform> _patrolPoints;
 
-    void OnDisable()
-    {
-        _detectionArea.OnCharacterEnter -= AddToDetectedCharacters;
-        _detectionArea.OnCharacterExit -= DeleteFromDetectedCharacters;
-    }
+        private List<AllyAndEnemySystem> _detectedCharacters;
+        [SerializeField]
+        private AllyAndEnemySystem _nearestEnemy;
+        private Transform _transform;
 
-    void Update()
-    {
-        UpdateTimers();
+        private BehaviourTreeRoot _behaviourTree;
 
-        if (_timeAfterLastBehaviourUpdate > _aiData.timeOfUpdatingBehaviours)
+        private float _timeAfterLastBehaviourUpdate = 0;
+        private float _timeAfterLastAttack = 0;
+
+        private void OnValidate()
         {
-            _timeAfterLastBehaviourUpdate = 0f;
-            
-            FindNearestEnemy();
-            if (IdleBehaviour()) return;
-            if (ChaseBehaviour()) return;
-            if (AttackBehaviour()) return;
-        }
-    }
-
-    // private IEnumerator UpdateBehaviours()
-    // {
-    //     while (true)
-    //     {
-    //         FindNearestEnemy();
-    //         if (IdleBehaviour()) yield return new WaitForSeconds(_aiData.timeOfUpdatingBehaviours);
-    //         if (ChaseBehaviour()) yield return new WaitForSeconds(_aiData.timeOfUpdatingBehaviours);
-    //         if (AttackBehaviour()) yield return new WaitForSeconds(_aiData.timeOfUpdatingBehaviours);
-    //     }
-    // }
-
-    private bool ChaseBehaviour()
-    {
-        var distance = Vector2.Distance(_transform.position,
-            _nearestEnemy.transform.position);
-
-        if (distance > _aiData.attackDistance)
-        {
-            var enemyPoint = GetEnemyPoint(_nearestEnemy);
-
-            if (enemyPoint < 0)
-            {
-                _controllable.MoveControllable(-1f, 0f);
-            }
-            if (enemyPoint > 0)
-            {
-                _controllable.MoveControllable(1f, 0f);
-            }
-            return true;
-        } 
-
-        return false; 
-    }
-
-    private bool IdleBehaviour()
-    {
-        if (!_nearestEnemy) 
-        {
-            _controllable.MoveControllable(0f, 0f); 
-            return true;
+            _transform = GetComponent<Transform>();
+            _character = GetComponent<MetroidvaniaCharacter>();
         }
 
-        return false;
-    }
-
-    private bool AttackBehaviour()
-    {
-        var distance = Vector2.Distance(_transform.position,
-            _nearestEnemy.transform.position);
-
-        if (distance < _aiData.attackDistance)
+        private void Awake()
         {
-            if (_timeAfterLastAttack > _aiData.attackDistance)
-            {
-                _controllable.MoveControllable(0f, 0f);
-                _controllable.Attack();
-            }
+            _behaviourTree = new BehaviourTreeRoot("AIController");
+            //_behaviourTree.AddChild(new Leaf("Patrol", new PatrolStrategy(transform, _character, _patrolPoints)));
 
-            return true;
+            var isEnemyAlive = new Leaf("IsEnemyAlive", new Condition(() => _nearestEnemy != null));
+            var moveToEnemy = new Leaf("MoveToEnemy", new ActionStrategy(() => ChaseBehaviour()));
+
+            var sequence = new SequenceNode("GoToEnemy");
+
+            sequence.AddChild(isEnemyAlive);
+            sequence.AddChild(moveToEnemy);
+
+            _behaviourTree.AddChild(sequence);
         }
 
-        return false;
-    }
-
-    private void FindNearestEnemy()
-    {
-        if (_detectedCharacters.Count == 0) 
+        void Start()
         {
-            _nearestEnemy = null; 
+            _detectedCharacters = new List<AllyAndEnemySystem>();
         }
-        float minimalDistance = Mathf.Infinity;
-        AllyAndEnemySystem enemyToReturn = null;
-        foreach (var enemy in _detectedCharacters)
-        {
-            float distance = Vector2.Distance(_transform.position, 
-                enemy.transform.position);
 
-            if (enemy.characterSide != _allyAndEnemy.characterSide 
-                && minimalDistance > distance)
+        void OnEnable()
+        {
+            _detectionArea.OnCharacterEnter += AddToDetectedCharacters;
+            _detectionArea.OnCharacterExit += DeleteFromDetectedCharacters;
+        }
+
+        void OnDisable()
+        {
+            _detectionArea.OnCharacterEnter -= AddToDetectedCharacters;
+            _detectionArea.OnCharacterExit -= DeleteFromDetectedCharacters;
+        }
+
+        void Update()
+        {
+            _behaviourTree.Process();
+            //UpdateTimers();
+
+            //if (_timeAfterLastBehaviourUpdate > _aiData.timeOfUpdatingBehaviours)
+            //{
+            //    _timeAfterLastBehaviourUpdate = 0f;
+
+            //    FindNearestEnemy();
+            //    if (IdleBehaviour()) return;
+            //    if (ChaseBehaviour()) return;
+            //    if (AttackBehaviour()) return;
+            //}
+        }
+
+        // private IEnumerator UpdateBehaviours()
+        // {
+        //     while (true)
+        //     {
+        //         FindNearestEnemy();
+        //         if (IdleBehaviour()) yield return new WaitForSeconds(_aiData.timeOfUpdatingBehaviours);
+        //         if (ChaseBehaviour()) yield return new WaitForSeconds(_aiData.timeOfUpdatingBehaviours);
+        //         if (AttackBehaviour()) yield return new WaitForSeconds(_aiData.timeOfUpdatingBehaviours);
+        //     }
+        // }
+
+        private void ChaseBehaviour()
+        {
+            var distance = Vector2.Distance(_transform.position,
+                _nearestEnemy.transform.position);
+
+            if (distance > _aiData.attackDistance)
             {
-                enemyToReturn = enemy;
-                minimalDistance = distance;
+                var enemyPoint = GetEnemyPoint(_nearestEnemy);
+
+                if (enemyPoint < 0)
+                {
+                    _character.MoveControllable(-1f, 0f);
+                }
+                if (enemyPoint > 0)
+                {
+                    _character.MoveControllable(1f, 0f);
+                }
             }
         }
 
-        _nearestEnemy = enemyToReturn;
-    }
-
-    private float GetEnemyPoint(AllyAndEnemySystem enemy)
-    {
-        if (enemy.transform.position.x < _transform.position.x)
+        private bool IdleBehaviour()
         {
-            return -1;
-        }
-        else return 1;
-    }
+            if (!_nearestEnemy)
+            {
+                _character.MoveControllable(0f, 0f);
+                return true;
+            }
 
-    private void AddToDetectedCharacters(AllyAndEnemySystem character)
-    {
-        if (!_detectedCharacters.Contains(character))
+            return false;
+        }
+
+        private bool AttackBehaviour()
         {
-            _detectedCharacters.Add(character);
-        }
-    }
+            var distance = Vector2.Distance(_transform.position,
+                _nearestEnemy.transform.position);
 
-    private void DeleteFromDetectedCharacters(AllyAndEnemySystem character)
-    {
-        if (_detectedCharacters.Contains(character))
+            if (distance < _aiData.attackDistance)
+            {
+                if (_timeAfterLastAttack > _aiData.attackDistance)
+                {
+                    _character.MoveControllable(0f, 0f);
+                    _character.Attack();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private void FindNearestEnemy()
         {
-            _detectedCharacters.Remove(character);
-        }
-    }
+            if (_detectedCharacters.Count == 0)
+            {
+                _nearestEnemy = null;
+            }
+            float minimalDistance = Mathf.Infinity;
+            AllyAndEnemySystem enemyToReturn = null;
+            foreach (var enemy in _detectedCharacters)
+            {
+                float distance = Vector2.Distance(_transform.position,
+                    enemy.transform.position);
 
-    private void UpdateTimers()
-    {
-        _timeAfterLastBehaviourUpdate += Time.deltaTime;
-        _timeAfterLastAttack += Time.deltaTime;
+                if (enemy.characterSide != _allyAndEnemy.characterSide
+                    && minimalDistance > distance)
+                {
+                    enemyToReturn = enemy;
+                    minimalDistance = distance;
+                }
+            }
+
+            _nearestEnemy = enemyToReturn;
+        }
+
+        private float GetEnemyPoint(AllyAndEnemySystem enemy)
+        {
+            if (enemy.transform.position.x < _transform.position.x)
+            {
+                return -1;
+            }
+            else return 1;
+        }
+
+        private void AddToDetectedCharacters(AllyAndEnemySystem character)
+        {
+            if (!_detectedCharacters.Contains(character))
+            {
+                _detectedCharacters.Add(character);
+            }
+        }
+
+        private void DeleteFromDetectedCharacters(AllyAndEnemySystem character)
+        {
+            if (_detectedCharacters.Contains(character))
+            {
+                _detectedCharacters.Remove(character);
+            }
+        }
+
+        private void UpdateTimers()
+        {
+            _timeAfterLastBehaviourUpdate += Time.deltaTime;
+            _timeAfterLastAttack += Time.deltaTime;
+        }
     }
 }

@@ -19,7 +19,7 @@ MonoBehaviour:
   _coyoteTime: 0.2
   _jumpBufferingTime: 0.5
   _dashStrength: 8
-  _dashTime: 0.3
+  _dashTime: 0.05
   _dashCooldown: 0.5
   _canClimbOnWalls: 0
   _climbSpeed: 4
