@@ -1,4 +1,4 @@
-﻿using Metroidvania.AI.BehaviorTree;
+﻿using Metroidvania.AI.BehaviorTrees;
 using System;
 
 namespace Metroidvania.AI.ConcreteBehaviours

@@ -1,11 +1,8 @@
-namespace Metroidvania.AI.BehaviorTrees
+﻿namespace Metroidvania.AI.BehaviorTrees
 {
-    public class SequenceNode : Node
+    public class SelectorNode : Node
     {
-        public SequenceNode(string name) : base(name)
-        {
-
-        }
+        public SelectorNode(string name) : base(name) { }
 
         public override Status Process()
         {
@@ -15,17 +12,17 @@ namespace Metroidvania.AI.BehaviorTrees
                 {
                     case Status.Running:
                         return Status.Running;
-                    case Status.Failure:
+                    case Status.Success:
                         Reset();
-                        return Status.Failure;
+                        return Status.Success;
                     default:
                         currentChild++;
-                        return currentChild == children.Count ? Status.Success : Status.Running;
+                        return Status.Running;
                 }
             }
 
             Reset();
-            return Status.Success;
+            return Status.Failure;
         }
     }
 }

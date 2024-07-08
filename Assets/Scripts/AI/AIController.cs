@@ -1,4 +1,5 @@
-using Metroidvania.AI.BehaviorTree;
+using Metroidvania.AI.Actions;
+using Metroidvania.AI.BehaviorTrees;
 using Metroidvania.AI.ConcreteBehaviours;
 using Metroidvania.CharacterControllers;
 using System.Collections.Generic;
@@ -7,8 +8,12 @@ using UnityEngine;
 namespace Metroidvania.AI
 {
     [RequireComponent(typeof(IControllable))]
-    public class AIController : MonoBehaviour
+    public class AIController : MonoBehaviour, IActionExecutor
     {
+        public Transform NextMovePoint { get; private set; }
+
+        public IAction Action { get; private set; }
+
         [SerializeField] private AIData _aiData;
         [SerializeField] MetroidvaniaCharacter _character;
         [SerializeField] private AllyAndEnemySystem _allyAndEnemy;
@@ -21,7 +26,7 @@ namespace Metroidvania.AI
         private AllyAndEnemySystem _nearestEnemy;
         private Transform _transform;
 
-        private BehaviourTreeRoot _behaviourTree;
+        private BehaviourTree _behaviourTree;
 
         private float _timeAfterLastBehaviourUpdate = 0;
         private float _timeAfterLastAttack = 0;
@@ -34,18 +39,18 @@ namespace Metroidvania.AI
 
         private void Awake()
         {
-            _behaviourTree = new BehaviourTreeRoot("AIController");
-            //_behaviourTree.AddChild(new Leaf("Patrol", new PatrolStrategy(transform, _character, _patrolPoints)));
+            _behaviourTree = new BehaviourTree("AIController");
+            _behaviourTree.AddChild(new Leaf("Patrol", new PatrolStrategy(_character, _patrolPoints, this)));
 
-            var isEnemyAlive = new Leaf("IsEnemyAlive", new Condition(() => _nearestEnemy != null));
-            var moveToEnemy = new Leaf("MoveToEnemy", new ActionStrategy(() => ChaseBehaviour()));
+            //var isEnemyAlive = new Leaf("IsEnemyAlive", new Condition(() => _nearestEnemy != null));
+            //var moveToEnemy = new Leaf("MoveToEnemy", new ActionStrategy(() => MoveToPoint(_nearestEnemy.transform)));
 
-            var sequence = new SequenceNode("GoToEnemy");
+            //var sequence = new SequenceNode("GoToEnemy");
 
-            sequence.AddChild(isEnemyAlive);
-            sequence.AddChild(moveToEnemy);
+            //sequence.AddChild(isEnemyAlive);
+            //sequence.AddChild(moveToEnemy);
 
-            _behaviourTree.AddChild(sequence);
+            //_behaviourTree.AddChild(sequence);
         }
 
         void Start()
@@ -68,6 +73,8 @@ namespace Metroidvania.AI
         void Update()
         {
             _behaviourTree.Process();
+            Action?.Execute();
+
             //UpdateTimers();
 
             //if (_timeAfterLastBehaviourUpdate > _aiData.timeOfUpdatingBehaviours)
@@ -91,26 +98,6 @@ namespace Metroidvania.AI
         //         if (AttackBehaviour()) yield return new WaitForSeconds(_aiData.timeOfUpdatingBehaviours);
         //     }
         // }
-
-        private void ChaseBehaviour()
-        {
-            var distance = Vector2.Distance(_transform.position,
-                _nearestEnemy.transform.position);
-
-            if (distance > _aiData.attackDistance)
-            {
-                var enemyPoint = GetEnemyPoint(_nearestEnemy);
-
-                if (enemyPoint < 0)
-                {
-                    _character.MoveControllable(-1f, 0f);
-                }
-                if (enemyPoint > 0)
-                {
-                    _character.MoveControllable(1f, 0f);
-                }
-            }
-        }
 
         private bool IdleBehaviour()
         {
@@ -195,6 +182,16 @@ namespace Metroidvania.AI
         {
             _timeAfterLastBehaviourUpdate += Time.deltaTime;
             _timeAfterLastAttack += Time.deltaTime;
+        }
+
+        public void SetAction(IAction action)
+        {
+            Action = action;
+        }
+
+        public void StopAction()
+        {
+            Action = null;
         }
     }
 }

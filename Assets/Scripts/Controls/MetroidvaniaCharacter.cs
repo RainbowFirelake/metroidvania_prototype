@@ -12,6 +12,8 @@ namespace Metroidvania.CharacterControllers
     typeof(BasicMovementBehaviour))]
     public class MetroidvaniaCharacter : MonoBehaviour, IControllable
     {
+        public Vector3 Position => _transform.position;
+
         [SerializeField]
         private BasicMovementBehaviour _movementBehaviour;
         [SerializeField]
@@ -23,7 +25,7 @@ namespace Metroidvania.CharacterControllers
         private AttackerBehaviour _attackerBehaviour;
 
         private IFixedUpdate _currentFixedUpdatable;
-
+        private Transform _transform;
         private bool _canMove = true;
 
         private void OnValidate()
@@ -37,6 +39,7 @@ namespace Metroidvania.CharacterControllers
         private void Start()
         {
             _currentFixedUpdatable = _movementBehaviour;
+            _transform = transform;
         }
 
         private void OnEnable()
@@ -55,6 +58,11 @@ namespace Metroidvania.CharacterControllers
 
             _dashBehaviour.OnStartDash -= SetDashBehaviourFixedUpdate;
             _dashBehaviour.OnEndDash -= SetMovementBehaviourFixedUpdate;
+        }
+
+        private void Update()
+        {
+
         }
 
         private void FixedUpdate()

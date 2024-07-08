@@ -1,4 +1,4 @@
-namespace Metroidvania.AI.BehaviorTree
+namespace Metroidvania.AI.BehaviorTrees
 {
     public interface IBehaviourStrategy
     {

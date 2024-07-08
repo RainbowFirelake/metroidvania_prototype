@@ -1,8 +1,8 @@
-namespace Metroidvania.AI.BehaviorTree
+namespace Metroidvania.AI.BehaviorTrees
 {
-    public class BehaviourTreeRoot : Node
+    public class BehaviourTree : Node
     {
-        public BehaviourTreeRoot(string name) : base(name) { }
+        public BehaviourTree(string name) : base(name) { }
 
         public override Status Process()
         {

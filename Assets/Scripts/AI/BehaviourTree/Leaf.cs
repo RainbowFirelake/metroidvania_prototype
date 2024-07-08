@@ -1,6 +1,6 @@
 using System;
 
-namespace Metroidvania.AI.BehaviorTree
+namespace Metroidvania.AI.BehaviorTrees
 {
     public class Leaf : Node
     {
@@ -8,7 +8,7 @@ namespace Metroidvania.AI.BehaviorTree
 
         public Leaf(string name, IBehaviourStrategy behaviourStrategy) : base(name)
         {
-            this._behaviourStrategy = behaviourStrategy ?? throw new ArgumentNullException();
+            _behaviourStrategy = behaviourStrategy ?? throw new ArgumentNullException();
         }
 
         public override Status Process() => _behaviourStrategy.Process();

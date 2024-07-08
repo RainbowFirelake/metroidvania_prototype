@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Metroidvania.AI.BehaviorTree
+namespace Metroidvania.AI.BehaviorTrees
 {
     public class Node
     {
@@ -8,12 +8,15 @@ namespace Metroidvania.AI.BehaviorTree
 
         public readonly string name;
 
+        public readonly int priority;
+
         public readonly List<Node> children = new();
         protected int currentChild;
 
-        public Node(string name = "Node")
+        public Node(string name = "Node", int priority = 0)
         {
             this.name = name;
+            this.priority = priority;
         }
 
         public void AddChild(Node child) => children.Add(child);
