@@ -42,6 +42,14 @@ namespace Metroidvania.AI
             _behaviourTree = new BehaviourTree("AIController");
             _behaviourTree.AddChild(new Leaf("Patrol", new PatrolStrategy(_character, _patrolPoints, this)));
 
+            var selector = new SelectorNode("SelectorNode");
+            selector.AddChild(new Leaf("IsEnemyAround", new Condition(() => _nearestEnemy != null)));
+
+            var sequence = new SequenceNode("SequenceNode");
+            sequence.AddChild(new Leaf("MoveToPointAIAction", new MoveToPointStrategy(_character, _nearestEnemy.transform, this)));
+            sequence.AddChild(new Leaf("CheckDistanceToAttacker", new Condition(() => Vector2.Distance(_nearestEnemy.transform.position, _transform.position) < 2f)));
+            sequence.AddChild(new Leaf("", new AttackStrategy()));
+
             //var isEnemyAlive = new Leaf("IsEnemyAlive", new Condition(() => _nearestEnemy != null));
             //var moveToEnemy = new Leaf("MoveToEnemy", new ActionStrategy(() => MoveToPoint(_nearestEnemy.transform)));
 
