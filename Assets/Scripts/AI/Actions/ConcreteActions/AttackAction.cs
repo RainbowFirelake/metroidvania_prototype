@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.AI.Actions.ConcreteActions
+namespace Metroidvania.AI.Actions
 {
-    internal class AttackAction
+    public class AttackAction : IAction
     {
+        public void Execute()
+        {
+
+        }
     }
 }
