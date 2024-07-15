@@ -15,6 +15,7 @@ namespace Metroidvania.AI.Actions
                 return Vector2.Distance(_target.position, _character.Position) < 1;
             }
         }
+
         private readonly MetroidvaniaCharacter _character;
         private Transform _target;
 

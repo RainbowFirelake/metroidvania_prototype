@@ -1,6 +1,7 @@
 using Metroidvania.AI.Actions;
 using Metroidvania.AI.BehaviorTrees;
 using Metroidvania.AI.ConcreteBehaviours;
+using Metroidvania.AllyAndEnemy;
 using Metroidvania.CharacterControllers;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,13 +43,18 @@ namespace Metroidvania.AI
             _behaviourTree = new BehaviourTree("AIController");
             _behaviourTree.AddChild(new Leaf("Patrol", new PatrolStrategy(_character, _patrolPoints, this)));
 
-            var sequence = new SequenceNode("SequenceNode");
-            sequence.AddChild(new Leaf("", new Condition(() => _nearestEnemy != null)));
-            sequence.AddChild(new Leaf("MoveToPointAIAction", new MoveToPointStrategy(_character, _nearestEnemy.transform, this)));
-            sequence.AddChild(new Leaf("CheckDistanceToAttacker", new Condition(() => Vector2.Distance(_nearestEnemy.transform.position, _transform.position) < 2f)));
-            sequence.AddChild(new Leaf("", new AttackStrategy()));
+            var attackSequence = new SequenceNode("SequenceNode");
+            attackSequence.AddChild(new Leaf("IsEnemyAround", new Condition(() => _nearestEnemy != null)));
+            attackSequence.AddChild(new Leaf("MoveToPointAIAction", new MoveToPointStrategy(_character, _nearestEnemy.transform, this)));
+            attackSequence.AddChild(new Leaf("AttackEnemy", new AttackStrategy()));
+
+            var patrolSequence = new SequenceNode("PatrolSequence");
+
+            patrolSequence.AddChild(new Leaf("Patrolling", new PatrolStrategy(_character, _patrolPoints, this)));
 
             var selector = new SelectorNode("SelectorNode");
+
+
 
             //var isEnemyAlive = new Leaf("IsEnemyAlive", new Condition(() => _nearestEnemy != null));
             //var moveToEnemy = new Leaf("MoveToEnemy", new ActionStrategy(() => MoveToPoint(_nearestEnemy.transform)));
@@ -150,7 +156,7 @@ namespace Metroidvania.AI
                 float distance = Vector2.Distance(_transform.position,
                     enemy.transform.position);
 
-                if (enemy.characterSide != _allyAndEnemy.characterSide
+                if (enemy.CharacterSide != _allyAndEnemy.CharacterSide
                     && minimalDistance > distance)
                 {
                     enemyToReturn = enemy;

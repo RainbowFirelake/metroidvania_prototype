@@ -2,7 +2,7 @@ namespace Metroidvania.AI.BehaviorTrees
 {
     public class SequenceNode : Node
     {
-        public SequenceNode(string name) : base(name)
+        public SequenceNode(string name, int priority = 0) : base(name, priority)
         {
 
         }

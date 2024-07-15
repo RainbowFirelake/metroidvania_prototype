@@ -6,7 +6,7 @@ namespace Metroidvania.AI.BehaviorTrees
     {
         private readonly IBehaviourStrategy _behaviourStrategy;
 
-        public Leaf(string name, IBehaviourStrategy behaviourStrategy) : base(name)
+        public Leaf(string name, IBehaviourStrategy behaviourStrategy, int priority = 0) : base(name, priority)
         {
             _behaviourStrategy = behaviourStrategy ?? throw new ArgumentNullException();
         }

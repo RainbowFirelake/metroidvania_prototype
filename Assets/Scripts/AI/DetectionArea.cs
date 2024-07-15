@@ -1,28 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Metroidvania.AllyAndEnemy;
 using System;
+using UnityEngine;
 
-public class DetectionArea : MonoBehaviour
+namespace Metroidvania.AI
 {
-    public event Action<AllyAndEnemySystem> OnCharacterEnter;
-    public event Action<AllyAndEnemySystem> OnCharacterExit;
-
-    private void OnTriggerEnter2D(Collider2D other)
+    public class DetectionArea : MonoBehaviour
     {
-        var side = other.GetComponent<AllyAndEnemySystem>();
-        if (side)
+        public event Action<AllyAndEnemySystem> OnCharacterEnter;
+        public event Action<AllyAndEnemySystem> OnCharacterExit;
+
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            OnCharacterEnter?.Invoke(side);
+            var side = other.GetComponent<AllyAndEnemySystem>();
+            if (side)
+            {
+                OnCharacterEnter?.Invoke(side);
+            }
         }
-    }
 
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        var side = other.GetComponent<AllyAndEnemySystem>();
-        if (side)
+        private void OnTriggerExit2D(Collider2D other)
         {
-            OnCharacterExit?.Invoke(side);
+            var side = other.GetComponent<AllyAndEnemySystem>();
+            if (side)
+            {
+                OnCharacterExit?.Invoke(side);
+            }
         }
     }
 }

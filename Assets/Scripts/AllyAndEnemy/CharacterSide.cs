@@ -1,5 +1,9 @@
-public enum CharacterSide
+
+namespace Metroidvania.AllyAndEnemy
 {
-    Ally,
-    Enemy    
+    public enum CharacterSide
+    {
+        Ally,
+        Enemy
+    }
 }

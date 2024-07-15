@@ -1,3 +1,4 @@
+using Metroidvania.AllyAndEnemy;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -105,7 +106,7 @@ namespace Metroidvania.Combat
             var enemyHealth = enemy.GetComponent<HealthSystem>();
             var modifiable = enemy.GetComponent<ModifiableActor>();
 
-            if (enemyHealth && side && side.characterSide != _allyAndEnemy.characterSide)
+            if (enemyHealth && side && side.CharacterSide != _allyAndEnemy.CharacterSide)
             {
                 enemyHealth.TakeDamage(_currentWeapon.Damage * attackInfo.DamagePercentModifier);
 

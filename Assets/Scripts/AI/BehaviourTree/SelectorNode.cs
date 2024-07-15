@@ -2,7 +2,7 @@
 {
     public class SelectorNode : Node
     {
-        public SelectorNode(string name) : base(name) { }
+        public SelectorNode(string name, int priority = 0) : base(name, priority) { }
 
         public override Status Process()
         {
